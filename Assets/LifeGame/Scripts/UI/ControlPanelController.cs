@@ -1,60 +1,57 @@
 using UnityEngine;
 using UnityEngine.UI;
 using TMPro;
-using UnityEngine.Events;
 using System.Collections.Generic;
+using UnityEngine.Events;
 
 namespace LifeGame.UI
 {
-    
-    [System.Serializable] 
-    public struct ButtonData
-    {
-        public string buttonText;
-        public UnityEvent onClickAction;
-    }
-
-  
     public class ControlPanelController : MonoBehaviour
     {
         public static ControlPanelController Instance { get; private set; }
 
-        [SerializeField] private Button[] buttons;
-        [SerializeField] private TextMeshProUGUI[] buttonTexts;
+        [Header("UI Components")]
+        [SerializeField] private List<Button> buttons;
+        [SerializeField] private List<TextMeshProUGUI> buttonTexts;
+
         private void Awake()
         {
-            // 게임 시작 시 "내가 바로 그 담당자다"라고 등록
             if (Instance == null)
             {
                 Instance = this;
-                // 씬이 넘어가도 파괴되지 않게 하려면 아래 줄 주석 해제
-                // DontDestroyOnLoad(gameObject); 
+                DontDestroyOnLoad(gameObject);
             }
             else
             {
-                // 만약 실수로 2개가 생기면 나중에 생긴 놈을 파괴 (중복 방지)
                 Destroy(gameObject);
-                return;
             }
         }
 
-        public void InitializeButtons(List<ButtonData> dataList)
+        // ★ SceneConfig 클래스 안에 있는 ButtonInfo 구조체를 사용한다고 명시
+        public void SetSceneButtons(List<SceneConfig.ButtonInfo> newButtons)
         {
-            for (int i = 0; i < buttons.Length; i++)
+            // 1. 기존 버튼 초기화
+            foreach (var btn in buttons)
             {
-                if (i < dataList.Count)
-                {
-                    buttons[i].gameObject.SetActive(true);
-                    buttonTexts[i].text = dataList[i].buttonText;
+                btn.gameObject.SetActive(false);
+                btn.onClick.RemoveAllListeners();
+            }
 
-                    // 기존 연결 끊고 새로 연결
-                    buttons[i].onClick.RemoveAllListeners();
-                    buttons[i].onClick.AddListener(() => dataList[i].onClickAction.Invoke());
-                }
-                else
+            // 2. 새 버튼 등록
+            for (int i = 0; i < newButtons.Count; i++)
+            {
+                if (i >= buttons.Count) break;
+
+                int index = i;
+                var info = newButtons[index];
+
+                buttons[index].gameObject.SetActive(true);
+                buttonTexts[index].text = info.buttonText;
+
+                buttons[index].onClick.AddListener(() =>
                 {
-                    buttons[i].gameObject.SetActive(false);
-                }
+                    info.onClickAction?.Invoke();
+                });
             }
         }
     }

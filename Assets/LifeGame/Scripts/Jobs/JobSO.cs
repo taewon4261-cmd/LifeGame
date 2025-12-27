@@ -1,4 +1,7 @@
+using LifeGame.Manager;
+using System.Collections.Generic;
 using UnityEngine;
+
 
 namespace LifeGame.Jobs
 {
@@ -6,18 +9,19 @@ namespace LifeGame.Jobs
     [CreateAssetMenu(fileName = "NewJob", menuName = "LifeGame/Job Data")]
     public class JobSO : ScriptableObject
     {
-        [Header("Basic Info")]
-        public string jobName;        // 직업 이름 (예: 광부)
-        [TextArea] public string description;
+        public string jobName;
+        public string description;
+        public Sprite icon;
 
-        [Header("Economy")]
-        public int incomePerAction;   // 업무 1회당 수입
-        public float workCooldown;    // 업무 쿨타임
+        // ★ 핵심: 이 직업이 가질 초기 스탯 목록
+        [System.Serializable]
+        public struct StatBonus
+        {
+            public StatType statType;
+            public int value;
+        }
 
-        [Header("Requirements")]
-        // 이 직업을 얻기 위한 조건 (예: 0이면 조건 없음)
-        public int requiredStr;
-        public int unlockCost;        // 전직 비용
+        public List<StatBonus> baseStats; // 예: 광부는 MiningPower: 10, Stamina: 50
     }
 
     // 2. 아이템 데이터

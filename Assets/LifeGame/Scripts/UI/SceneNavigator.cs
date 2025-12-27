@@ -5,6 +5,24 @@ namespace LifeGame.UI
 {
     public class SceneNavigator : MonoBehaviour
     {
+        public static SceneNavigator Instance { get; private set; }
+
+        private void Awake()
+        {
+            // ★ 2. 싱글톤 초기화
+            if (Instance == null)
+            {
+                Instance = this;
+                // ControlPanel(부모)이 이미 DontDestroyOnLoad이므로 
+                // 여기서는 별도로 DontDestroyOnLoad를 호출하지 않아도 됩니다.
+            }
+            else
+            {
+                // 중복 생성 방지
+                Destroy(gameObject);
+            }
+        }
+
         [Header("Scene Configuration")]
         [SerializeField] private string MineSceneName = "Mine";
         [SerializeField] private string homeSceneName = "Home";
