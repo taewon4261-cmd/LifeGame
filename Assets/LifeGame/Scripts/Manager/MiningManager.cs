@@ -145,7 +145,13 @@ namespace LifeGame.Manager
             if (!success)
             {
                 // 체력 부족 -> 기절 발생!
-                Debug.Log("체력이 다해 쓰러졌습니다... 집으로 이송됩니다.");
+                
+                long currentMoney = GameManager.Instance.money;
+                long penalty = currentMoney / 2;
+
+                GameManager.Instance.AddMoney(-penalty);
+
+                GameManager.Instance.SaveGame();
 
                 // 집으로 강제 귀환 (Home 씬)
                 // SceneNavigator에 GoHome이 없다면 GoToTown 대신 LoadScene을 써도 됨

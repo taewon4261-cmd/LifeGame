@@ -19,7 +19,7 @@ namespace LifeGame.UI
             // N0 포맷: 1,000,000 처럼 3자리마다 콤마를 찍어줍니다.
             if (moneyText != null)
             {
-                moneyText.text = $"{currentMoney:N0} won";
+                moneyText.text = $"{currentMoney:N0} 원";
             }
         }
         public void UpdateHpUI(float current, float max)
